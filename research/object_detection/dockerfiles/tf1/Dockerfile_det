@@ -1,0 +1,43 @@
+FROM tensorflow/tensorflow:1.15.5-gpu
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# key rotation
+RUN apt-key del 7fa2af80
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
+
+
+RUN apt-get update && \
+    apt-get install -y python python-tk git curl unzip
+
+RUN pip install --upgrade pip
+
+
+RUN pip install -U numpy==1.19.5
+RUN pip install -U pycocotools==2.0.6
+RUN pip install tf_slim
+RUN pip install keras==2.2.5
+RUN pip uninstall -y protobuf
+RUN pip install protobuf==3.19.6
+RUN apt-get install -y protobuf-compiler
+RUN apt-get install -y libgl1-mesa-glx
+
+RUN git clone https://github.com/tensorflow/models.git && \
+cd /models/research && \
+protoc object_detection/protos/*.proto --python_out=. && \
+cp object_detection/packages/tf1/setup.py . && \
+python -m pip install .
+
+# Set the PYTHONPATH to finish installing the API
+ENV PYTHONPATH $PYTHONPATH:/models/research:/models/research/slim:/models/object_detection/utils/:/models/object_detection
+
+# Install wget (to make life easier below) and editors (to allow people to edit
+# the files inside the container)
+RUN apt-get update && \
+    apt-get install -y wget vim emacs nano
+
+ARG work_dir=/models/research
+
+
+WORKDIR ${work_dir}

@@ -1,0 +1,42 @@
+FROM tensorflow/tensorflow:1.15.5-gpu-py3
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# key rotation
+RUN apt-key del 7fa2af80
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
+
+
+RUN apt-get update && \
+    apt-get install -y python python-tk git curl unzip protobuf-compiler libgl1-mesa-glx wget vim emacs nano
+
+RUN pip install --upgrade pip
+RUN pip install --user -U numpy==1.19.5 \
+pycocotools==2.0.6 \
+tf_slim \
+keras==2.2.5 \
+protobuf==3.19.6
+
+
+# Add new user to avoid running as root
+RUN useradd -ms /bin/bash tensorflow
+USER tensorflow
+WORKDIR /home/tensorflow
+
+RUN cd /home/tensorflow
+RUN git clone https://github.com/walterwangimagr/models.git
+
+RUN (cd /home/tensorflow/models/research/ && protoc object_detection/protos/*.proto --python_out=.)
+WORKDIR /home/tensorflow/models/research/
+RUN cp object_detection/packages/tf1/setup.py ./
+
+RUN pip install --user -U pip
+RUN pip install --user .
+
+ENV PYTHONPATH $PYTHONPATH:/models/research:/models/research/slim:/models/object_detection/utils/:/models/object_detection
+
+ARG work_dir=/home/tensorflow/models/research
+
+
+WORKDIR ${work_dir}

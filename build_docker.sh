@@ -1,1 +1,1 @@
-sudo docker build -f research/object_detection/dockerfiles/tf1/Dockerfile . -t od_tf1
+docker build -f research/object_detection/dockerfiles/tf1/Dockerfile_test -t od_tf1_1 .

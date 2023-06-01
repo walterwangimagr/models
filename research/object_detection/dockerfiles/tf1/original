@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.15.2-gpu-py3
+FROM tensorflow/tensorflow:1.15.5-gpu-py3
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -16,18 +16,7 @@ RUN apt-get update && apt-get install -y \
     python3-pil \
     python3-lxml \
     python3-tk \
-    wget \
-    unzip
-
-RUN pip install --upgrade pip
-RUN pip install -U numpy==1.19.5
-RUN pip install -U pycocotools==2.0.6
-RUN pip install tf_slim
-RUN pip install keras==2.2.5
-RUN pip uninstall -y protobuf
-RUN pip install protobuf==3.19.6
-RUN apt-get install -y protobuf-compiler
-RUN apt-get install -y libgl1-mesa-glx
+    wget
 
 # Install gcloud and gsutil commands
 # https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
@@ -42,20 +31,18 @@ USER tensorflow
 WORKDIR /home/tensorflow
 
 # Copy this version of of the model garden into the image
-COPY --chown=tensorflow . /home/tensorflow/models
+# COPY --chown=tensorflow . /home/tensorflow/models
+RUN cd /home/tensorflow
+RUN git clone https://github.com/walterwangimagr/models.git
 
 # Compile protobuf configs
 RUN (cd /home/tensorflow/models/research/ && protoc object_detection/protos/*.proto --python_out=.)
 WORKDIR /home/tensorflow/models/research/
 
 RUN cp object_detection/packages/tf1/setup.py ./
-ENV PYTHONPATH $PYTHONPATH:/models/research:/models/research/slim:/models/object_detection/utils/:/models/object_detection
+ENV PATH="/home/tensorflow/.local/bin:${PATH}"
 
 RUN python -m pip install --user -U pip
 RUN python -m pip install --user .
 
-
-ARG work_dir=/models/research
-
-
-WORKDIR ${work_dir}
+ENV TF_CPP_MIN_LOG_LEVEL 3

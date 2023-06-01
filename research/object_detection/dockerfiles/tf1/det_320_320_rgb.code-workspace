@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../../../../imagr/trained_models/det_320_320_rgb"
+		},
+		{
+			"path": "../../../.."
+		}
+	],
+	"settings": {}
+}
