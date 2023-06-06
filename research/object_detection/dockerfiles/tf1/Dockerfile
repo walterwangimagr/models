@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.15.2-gpu-py3
+FROM walterwangimagr/tf1.15.5-gpu-py3-opencv
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -7,19 +7,13 @@ RUN apt-key del 7fa2af80
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
 
-# Install apt dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    gpg-agent \
-    python3-cairocffi \
-    protobuf-compiler \
-    python3-pil \
-    python3-lxml \
-    python3-tk \
-    wget \
-    unzip
+
+RUN apt-get update && \
+    apt-get install -y python python-tk git curl unzip
 
 RUN pip install --upgrade pip
+
+
 RUN pip install -U numpy==1.19.5
 RUN pip install -U pycocotools==2.0.6
 RUN pip install tf_slim
@@ -29,31 +23,19 @@ RUN pip install protobuf==3.19.6
 RUN apt-get install -y protobuf-compiler
 RUN apt-get install -y libgl1-mesa-glx
 
-# Install gcloud and gsutil commands
-# https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
-RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
-    echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
-    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-    apt-get update -y && apt-get install google-cloud-sdk -y
+RUN git clone https://github.com/walterwangimagr/models.git && \
+cd /models/research && \
+protoc object_detection/protos/*.proto --python_out=. && \
+cp object_detection/packages/tf1/setup.py . && \
+python -m pip install .
 
-# Add new user to avoid running as root
-RUN useradd -ms /bin/bash tensorflow
-USER tensorflow
-WORKDIR /home/tensorflow
-
-# Copy this version of of the model garden into the image
-COPY --chown=tensorflow . /home/tensorflow/models
-
-# Compile protobuf configs
-RUN (cd /home/tensorflow/models/research/ && protoc object_detection/protos/*.proto --python_out=.)
-WORKDIR /home/tensorflow/models/research/
-
-RUN cp object_detection/packages/tf1/setup.py ./
+# Set the PYTHONPATH to finish installing the API
 ENV PYTHONPATH $PYTHONPATH:/models/research:/models/research/slim:/models/object_detection/utils/:/models/object_detection
 
-RUN python -m pip install --user -U pip
-RUN python -m pip install --user .
-
+# Install wget (to make life easier below) and editors (to allow people to edit
+# the files inside the container)
+RUN apt-get update && \
+    apt-get install -y wget vim emacs nano
 
 ARG work_dir=/models/research
 
