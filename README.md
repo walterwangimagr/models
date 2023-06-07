@@ -99,5 +99,17 @@ sudo apt-get install edgetpu-compiler
 
 
 
+change the ModelDir int the `tflite_convert.sh`
 
+![image-20230608115321942](/home/walter/git/imagr/models/README.assets/image-20230608115321942.png)
+
+run the script 
+
+```bash
+bash tflite_convert.sh
+```
+
+then you will get a 
+
+`model_edgetpu.tflite` that can run on the micro controller 
 
