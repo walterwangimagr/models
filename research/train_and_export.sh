@@ -1,4 +1,4 @@
-export MODEL_DIR="/models/imagr/trained_models/det_320_320_rgb"
+export MODEL_DIR="/models/trained_models/det_320_320_rgb"
 export PIPELINE_CONFIG=$MODEL_DIR"/pipeline.config"
 export OUTPUT_DIR=$MODEL_DIR"/export"
 
