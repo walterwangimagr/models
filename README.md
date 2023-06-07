@@ -61,3 +61,43 @@ and start training
 
 
 
+# tflite_convert 
+
+After the trainning is done you should be able to get 
+
+* tflite_graph.pb
+* tflite_graph.pbtxt
+
+![image-20230608112031373](/home/walter/git/imagr/models/README.assets/image-20230608112031373.png)
+
+create a venv 
+
+```bash 
+virtualenv venv
+source venv/bin/activate 
+```
+
+Install tf2, edgetpu compiler and edgetpu runtime 
+
+``` bash
+pip install tensorflow==2.12.0
+
+# edgetpu runtime 
+echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install libedgetpu1-std
+sudo apt-get install libedgetpu1-max
+sudo apt-get install python3-pycoral
+
+# edgetpu compiler 
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
+sudo apt-get update
+sudo apt-get install edgetpu-compiler
+```
+
+
+
+
+
