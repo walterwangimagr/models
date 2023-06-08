@@ -1,3 +1,7 @@
+
+
+
+
 # Build docker container
 
 ```bash
@@ -12,10 +16,16 @@ docker build --no-cache -f research/object_detection/dockerfiles/tf1/Dockerfile 
 
 
 
-# Pipeline config 
+# Prepare tfrecord 
+
+on nas path 
+
+`/home/walter/nas_cv/walter_stuff/object_detection/data/3_locn_3_prods`
+
+# Prepare Pipeline config 
 
 * Create a dir to save all the training output, checkpoint, export model, etc. 
-  * eg. my model dir path: `~/git/mobileDet/saved_models/det_320_320_rgb`
+  * eg. my model dir path: `/home/walter/nas_cv/walter_stuff/object_detection/models/det_320_320_rgb`
 
 ![image-20230608105604070](/home/walter/git/imagr/models/README.assets/image-20230608105604070.png)
 
@@ -24,11 +34,15 @@ docker build --no-cache -f research/object_detection/dockerfiles/tf1/Dockerfile 
 
 # Run docker container 
 
-`run_docker.sh`
+in the `run_docker.sh`
+
+Copy the tfrecord path to DATA 
+
+Copy the model dir path to TRAINED_MODEL
 
 ```bash
-export DATA="/home/walter/git/mobileDet/data/micro_controller/tfrecord"
-export TRAINED_MODEL="/home/walter/git/mobileDet/saved_models"
+export DATA="/home/walter/nas_cv/walter_stuff/object_detection/data/3_locn_3_prods"
+export TRAINED_MODEL="/home/walter/nas_cv/walter_stuff/object_detection/models/det_320_320_rgb"
 sudo docker run -it --gpus device=0 \
 -v $DATA:/models/data/tfrecord \
 -v $TRAINED_MODEL:/models/trained_models \
