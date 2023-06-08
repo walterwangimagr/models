@@ -18,4 +18,4 @@ tflite_convert \
 --allow_nudging_weights_to_use_fast_gemm_kernel=true   \
 --allow_custom_ops
 
-edgetpu_compiler $OutputDir/model.tflite
+edgetpu_compiler $OutputDir/model.tflite -o $OutputDir

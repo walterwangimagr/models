@@ -25,12 +25,12 @@ on nas path
 # Prepare Pipeline config 
 
 * Create a dir to save all the training output, checkpoint, export model, etc. 
-  * eg. my model dir path: `/home/walter/nas_cv/walter_stuff/object_detection/models/det_320_320_rgb`
+  * eg. my models  path: `/home/walter/nas_cv/walter_stuff/object_detection/models`
+  * create  dir `det_320_320_rgb` and put the config file in here
 
 ![image-20230608105604070](/home/walter/git/imagr/models/README.assets/image-20230608105604070.png)
 
-* Only need to mount your tfrecord to `/models/data/tfrecord`
-* Store the pipeline config in model dir 
+* update the config file if needed 
 
 # Run docker container 
 
@@ -42,7 +42,7 @@ Copy the model dir path to TRAINED_MODEL
 
 ```bash
 export DATA="/home/walter/nas_cv/walter_stuff/object_detection/data/3_locn_3_prods"
-export TRAINED_MODEL="/home/walter/nas_cv/walter_stuff/object_detection/models/det_320_320_rgb"
+export TRAINED_MODEL="/home/walter/nas_cv/walter_stuff/object_detection/models"
 sudo docker run -it --gpus device=0 \
 -v $DATA:/models/data/tfrecord \
 -v $TRAINED_MODEL:/models/trained_models \
@@ -114,6 +114,8 @@ sudo apt-get install edgetpu-compiler
 
 
 change the ModelDir int the `tflite_convert.sh`
+
+`/home/walter/nas_cv/walter_stuff/object_detection/models/det_320_320_rgb`
 
 ![image-20230608115321942](/home/walter/git/imagr/models/README.assets/image-20230608115321942.png)
 
