@@ -28,7 +28,7 @@ on nas path
   * eg. my models  path: `/home/walter/nas_cv/walter_stuff/object_detection/models`
   * create  dir `det_320_320_rgb` and put the config file in here
 
-![image-20230608105604070](/home/walter/git/imagr/models/README.assets/image-20230608105604070.png)
+![image-20230608105604070](./README.assets/image-20230608105604070.png)
 
 * update the config file if needed 
 
@@ -67,7 +67,7 @@ after runing the docker
 
 vim the train_and_export.sh
 
-![image-20230608110059740](/home/walter/git/imagr/models/README.assets/image-20230608110059740.png)
+![image-20230608110059740](./README.assets/image-20230608110059740.png)
 
 Change the MODEL_DIR
 
@@ -82,7 +82,7 @@ After the trainning is done you should be able to get
 * tflite_graph.pb
 * tflite_graph.pbtxt
 
-![image-20230608112031373](/home/walter/git/imagr/models/README.assets/image-20230608112031373.png)
+![image-20230608112031373](./README.assets/image-20230608112031373.png)
 
 create a venv 
 
@@ -117,7 +117,7 @@ change the ModelDir int the `tflite_convert.sh`
 
 `/home/walter/nas_cv/walter_stuff/object_detection/models/det_320_320_rgb`
 
-![image-20230608115321942](/home/walter/git/imagr/models/README.assets/image-20230608115321942.png)
+![image-20230608115321942](./README.assets/image-20230608115321942.png)
 
 run the script 
 
